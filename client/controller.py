@@ -4,7 +4,6 @@ from quadgram_analysis import QuadgramAnalyzer
 
 STAGES = ["CAESAR_GROUPS", "FREQUENCY_ANALYSIS", "KEY_GENERATION", "KEY_EVALUATION"]
 
-
 def delegate(func_name, *args):
     """ switches client procedure to execute """
     # get function with given name (this function would've been sent with
@@ -33,7 +32,6 @@ def run_jobs():
             machine1_data = job().copy()
             machine2_data = job().copy()
 
-            # divide and conquer
             machine1_data[0] = machine1_data[0][2:]
             machine2_data[0] = machine2_data[0][:2]
 
@@ -47,10 +45,7 @@ def run_jobs():
         elif stage == "KEY_EVALUATION":
             job, job2 = handle_key_evaluation(machine1_data, machine2_data)
             cluster.wait()
-
-            print(job())
-            print(job2())
-
+            print(job(), job2())
 
 def handle_frequency_analysis(data):
     func = crack.frequency_analyzer
@@ -96,9 +91,11 @@ if __name__ == '__main__':
     socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     socket.connect(("8.8.8.8", 80))
 
-    cluster = dispy.JobCluster(delegate, ip_addr="192.168.0.101", nodes="192.168.0.*", depends=['quadgram_analysis.py', QuadgramAnalyzer])
-
+    cluster = dispy.JobCluster(delegate, ip_addr="192.168.0.142", nodes="192.168.0.*", depends=['quadgram_analysis.py', QuadgramAnalyzer])
+    import time
+    start_time = time.time()
     run_jobs()
+    print(f"--- {time.time() - start_time} seconds ---")
 
     cluster.print_status()
     cluster.close()

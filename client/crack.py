@@ -58,10 +58,10 @@ def frequency_analyzer(key_length, text_groups):
 
 def generate_keys(candidate_letters):
     import itertools
-    cart_prod = list(itertools.product(*candidate_letters))
+    cartesian_product = list(itertools.product(*candidate_letters))
     keys = []
     key = ""
-    for key_tuple in cart_prod:
+    for key_tuple in cartesian_product:
         for char in key_tuple:
             key += char
 
