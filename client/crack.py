@@ -1,12 +1,12 @@
-import itertools
-from quadgram_analysis import QuadgramAnalizer
+from quadgram_analysis import QuadgramAnalyzer
 
 
 def init(ciphertext, key_length):
     text_groups = caesar_groups(ciphertext, key_length)
     candidate_letters = frequency_analyzer(key_length, text_groups)
     keys = generate_keys(candidate_letters)
-    return evaluate_keys(ciphertext, keys)
+    q = QuadgramAnalyzer()
+    return evaluate_keys(q, ciphertext, keys)
 
 
 def caesar_groups(ciphertext, key_length):
@@ -38,12 +38,12 @@ def frequency_analyzer(key_length, text_groups):
 
     for group_num, group in enumerate(text_groups):
         for i in range(26):
-                deciphered = decrypt_unknown_key(group, chr(alphabet_start + i))
-                score = 0
-                for letter in deciphered:
-                    score += alphabet_freq_table[ord(letter) % alphabet_start]
+            deciphered = decrypt_unknown_key(group, chr(alphabet_start + i))
+            score = 0
+            for letter in deciphered:
+                score += alphabet_freq_table[ord(letter) % alphabet_start]
 
-                scores.append((score, chr(alphabet_start + i)))
+            scores.append((score, chr(alphabet_start + i)))
 
         scores.sort(reverse=True)
         for i, score in enumerate(scores):
@@ -57,6 +57,7 @@ def frequency_analyzer(key_length, text_groups):
 
 
 def generate_keys(candidate_letters):
+    import itertools
     cart_prod = list(itertools.product(*candidate_letters))
     keys = []
     key = ""
@@ -72,17 +73,16 @@ def generate_keys(candidate_letters):
 def sort_score(score):
     return score[1]
 
-def evaluate_keys(ciphertext, keys):
-    quad_analysis = QuadgramAnalizer()
+def evaluate_keys(analyzer, ciphertext, keys):
     fitness = []
     for key in keys:
         text = decrypt(ciphertext, key)
-        score = quad_analysis.text_fitness(text)
+        score = analyzer.text_fitness(text)
 
         fitness.append((key, score, text))
 
     fitness.sort(reverse=True, key=sort_score)
-    return fitness[:10]
+    return fitness[:5]
 
 def decrypt_unknown_key(ciphertext, key):
     ciphertext = ciphertext.lower()

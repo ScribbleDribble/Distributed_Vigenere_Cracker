@@ -1,7 +1,5 @@
-import math
 
-
-class QuadgramAnalizer:
+class QuadgramAnalyzer(object):
 
     def __init__(self):
         self.quadgram_table = {}
@@ -19,6 +17,7 @@ class QuadgramAnalizer:
             file.close()
 
     def log_probability(self, quadgram):
+        import math
         if quadgram in self.quadgram_table:
             return math.log10(self.quadgram_table[quadgram]/self.sum_quadgrams)
 
@@ -35,5 +34,4 @@ class QuadgramAnalizer:
             p += self.log_probability(text[i: i + ngram_size])
             i += 1
         return p
-
 
