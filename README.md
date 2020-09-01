@@ -1,7 +1,7 @@
 # Distributed Vigenere Crack
 
 This project utilizes a cluster of machines to crack the vigenere cipher. 
-This approach yields around a 50% reduction on cracking time with two servers and one client.
+The approach yields around a 50% reduction on cracking time with two servers and one client.
 
 ## Dependencies
 1. Virtualenv
@@ -9,21 +9,19 @@ This approach yields around a 50% reduction on cracking time with two servers an
 3. psutil
 4. numpy
 
-2x Raspberry Pi 4B's were used (as servers) alongside one desktop machine (client). 
+2x Raspberry Pi 4Bs were used (as servers) alongside one desktop machine (client). 
 
 ## Installation 
 
-1 Install virtualenv and then create a virtual environment.
+1| Install virtualenv and then create a virtual environment.
 
 `pip3 install virtualenv`
 
 `python3 -m virtualenv venv_name`
 
-2 Pull repo and install the other dependencies within the virtual environment.
+2| Pull repo and install the other dependencies within the virtual environment.
 
-Within venv_name/
-
-`source bin/activate`
+`cd venv_name/` 
 
 `git pull origin master`
 
@@ -32,9 +30,7 @@ Within venv_name/
 
 #### Server
 
-2 Run the server shell script.
-
-`git pull origin master`
+3| Run the server shell script.
 
 `cd server/`
 
@@ -42,11 +38,11 @@ Within venv_name/
 
 #### Client
 
-3 Pull repository code and enter into the client directory.
+3| Enter into the client directory.
 
 `cd client/`
 
-4 Run controller.py inputting your ciphertext and key length
+4| Run controller.py inputting your ciphertext and key length
 
 `python3 controller.py <ciphertext> <key length>`
 
