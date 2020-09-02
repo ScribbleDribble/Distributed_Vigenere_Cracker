@@ -1,13 +1,12 @@
 # Distributed Vigenere Crack
 
 This project utilizes a cluster of machines to crack the vigenere cipher. 
-The approach yields around a 50% reduction on cracking time with two servers and one client.
+The approach yields a near 50% reduction on cracking time with two servers and one client.
 
 ## Dependencies
 1. Virtualenv
 2. Dispy
 3. psutil
-4. numpy
 
 2x Raspberry Pi 4Bs were used (as servers) alongside one desktop machine (client). 
 

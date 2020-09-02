@@ -1,51 +1,24 @@
-import numpy as np
-
-
-def init_table():
-    alphabet_size = 26
-    alphabet_start = 97
-    alphabet_end = 122
-    row = 0
-    v_table = np.zeros([alphabet_size, alphabet_size], dtype="str")
-    i = alphabet_start
-    while row < alphabet_size:
-        temp = []
-        letter_count = 0
-        while letter_count < alphabet_size:
-            if i > alphabet_end:
-                i = alphabet_start + i - alphabet_end - 1
-            temp.append(chr(i))
-            letter_count += 1
-            i += 1
-
-        v_table[row:] = temp
-        row += 1
-        i = alphabet_start + row
-
-    return v_table
-
 
 def encrypt(plaintext, key):
-    v_table = init_table()
     plaintext = plaintext.lower()
+    ciphertext = ""
+    i = 0
     alphabet_start = 97
     alphabet_end = 122
-    j = 0
-    key_pass = 1
-    ciphertext = ""
-
-    i = 0
-    for letter in plaintext:
-        if ord(letter) < alphabet_start or ord(letter) > alphabet_end:
+    for char in plaintext:
+        if ord(char) < alphabet_start or ord(char) > alphabet_end:
             continue
 
-        if i >= len(key) * key_pass:
-            j = 0
-            key_pass += 1
+        if i == len(key):
+            i = 0
 
-        ciphertext += v_table[ord(letter) - alphabet_start, ord(key[j]) - alphabet_start]
+        val = ((ord(char) + ord(key[i])) % alphabet_start) + alphabet_start
+
+        if val > alphabet_end:
+            val = alphabet_start + (val - alphabet_end - 1)
+
+        ciphertext += chr(val)
         i += 1
-        j += 1
 
     return ciphertext.upper()
 

@@ -1,8 +1,11 @@
-import dispy, socket, argparse
+import argparse
+import dispy
+import socket
+
+import cipher
 import crack
 from quadgram_analysis import QuadgramAnalyzer
 
-STAGES = ["CAESAR_GROUPS", "FREQUENCY_ANALYSIS", "KEY_GENERATION", "KEY_EVALUATION"]
 
 def delegate(func_name, *args):
     """ switches client procedure to execute """
@@ -13,9 +16,11 @@ def delegate(func_name, *args):
 
 
 def run_jobs():
+    stages = ["CAESAR_GROUPS", "FREQUENCY_ANALYSIS", "KEY_GENERATION", "KEY_EVALUATION"]
+
     machine1_data = []
     machine2_data = []
-    for i, stage in enumerate(STAGES):
+    for i, stage in enumerate(stages):
 
         # first two stages to be executed by one machine
         # each stage is a dependency for the next one - must wait until execution has finished
@@ -47,10 +52,11 @@ def run_jobs():
             cluster.wait()
             print(job(), job2())
 
+
 def handle_frequency_analysis(data):
     func = crack.frequency_analyzer
     job = cluster.submit(func.__name__, args.key_length, data,
-                         dispy_job_depends=[func, crack.decrypt_unknown_key])
+                         dispy_job_depends=[func, cipher.decrypt_unknown_key])
 
     return job
 
@@ -73,9 +79,9 @@ def handle_key_evaluation(data, data2):
     func = crack.evaluate_keys
     q = QuadgramAnalyzer()
     job = cluster.submit(func.__name__,q, args.encrypted_message, data,
-                         dispy_job_depends=[func, crack.sort_score, crack.decrypt])
+                         dispy_job_depends=[func, crack.sort_score, cipher.decrypt])
     job2 = cluster.submit(func.__name__, q, args.encrypted_message, data2,
-                          dispy_job_depends=[func, crack.sort_score, crack.decrypt])
+                          dispy_job_depends=[func, crack.sort_score, cipher.decrypt])
 
     return job, job2
 
@@ -91,7 +97,7 @@ if __name__ == '__main__':
     socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     socket.connect(("8.8.8.8", 80))
 
-    cluster = dispy.JobCluster(delegate, ip_addr="192.168.0.142", nodes="192.168.0.*", depends=['quadgram_analysis.py', QuadgramAnalyzer])
+    cluster = dispy.JobCluster(delegate, ip_addr="192.168.0.142", nodes="192.168.0.*", depends=['quadgram_analysis.py', QuadgramAnalyzer, "cipher.py", cipher.decrypt, cipher.decrypt_unknown_key])
     import time
     start_time = time.time()
     run_jobs()

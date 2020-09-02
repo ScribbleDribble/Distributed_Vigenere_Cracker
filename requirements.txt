@@ -1,3 +1,2 @@
 dispy
 psutil
-numpy
