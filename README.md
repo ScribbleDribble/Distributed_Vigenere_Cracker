@@ -1,7 +1,4 @@
-# Distributed Vigenere Crack
 
-This project utilizes a cluster of machines to crack the vigenere cipher. 
-The approach yields a near 50% reduction on cracking time with two servers and one client.
 
 ## Dependencies
 1. Virtualenv
